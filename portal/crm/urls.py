@@ -1,7 +1,6 @@
-# crm/urls.py
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.search_customer, name='search_customer'),
+    path('customer_info/', views.customer_info, name='customer_info'),
 ]
