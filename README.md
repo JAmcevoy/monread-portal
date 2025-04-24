@@ -26,6 +26,14 @@ Once the user logs in, they should be able to access the following information:
 
 *Note: Admin users will have additional privileges to view and update company-specific information.*
 
+### Relationships Diagram
+
+![db diagram](images/db_diagram.JPG)
+
+### Design Proposal: First Mock
+
+![First Design Mock](images/wp_design.JPG)
+
 ---
 
 ### 2. Zoho CRM Integration
