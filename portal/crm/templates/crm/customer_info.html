@@ -1,0 +1,82 @@
+<!-- crm/templates/crm/customer_info.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monread Customer Portal</title>
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9fafb;
+  color: #333;
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+}
+
+.customer-info {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+
+.customer-info p {
+  font-size: 1.1rem;
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.customer-info span {
+  font-weight: 600;
+  color: #1e90ff;
+}
+
+input[type="text"] {
+  padding: 0.4rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  margin-left: 0.5rem;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #1e90ff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #187bcd;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Customer Info</h1>
+  <div class="customer-info">
+    <form method="get">
+      <p>
+        Customer Search: 
+        <input type="text" name="email" placeholder="Enter customer email" value="{{ request.GET.email }}">
+        <button type="submit">Search</button>
+      </p>
+    </form>
+    <p>Customer Name: <span>{{ contact.name|default:"-" }}</span></p>
+    <p>Company Name: <span>{{ contact.company_name|default:"-" }}</span></p>
+    <p>Support Time Left: <span>{{ contact.support_time_left|default:"-" }}</span></p>
+  </div>
+</body>
+</html>
