@@ -1,49 +1,29 @@
+# views.py
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.http import HttpResponse
-import requests
-import os
+from .utils import fetch_zoho_contacts
 
-# Function to get Zoho access token
-def get_zoho_access_token():
-    url = f"{os.environ.get('ZOHO_API_DOMAIN')}/oauth/v2/token"
-    params = {
-        "refresh_token": os.environ.get("ZOHO_REFRESH_TOKEN"),
-        "client_id": os.environ.get("ZOHO_CLIENT_ID"),
-        "client_secret": os.environ.get("ZOHO_CLIENT_SECRET"),
-        "grant_type": "refresh_token",
-    }
-    response = requests.post(url, params=params)
-    response.raise_for_status()
-    return response.json()["access_token"]
+# View to display the contacts from Zoho CRM
+def show_contacts(request):
+    contacts = fetch_zoho_contacts()  # Call the function to fetch contacts
 
-# Function to fetch customer data from Zoho API based on email
-def fetch_zoho_customer(email):
-    access_token = get_zoho_access_token()
-    url = f"{os.environ.get('ZOHO_API_DOMAIN')}/crm/v2/Leads/search"
-    headers = {
-        "Authorization": f"Zoho-oauthtoken {access_token}"
-    }
-    params = {"email": email}  # Search by email
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
+    # If an error occurred while fetching contacts, return an error response
+    if "error" in contacts:
+        return JsonResponse({"error": contacts["error"]}, status=400)
 
-    data = response.json()
-    if data.get("data"):
-        # Assuming only one result for the given email
-        return data["data"][0]
-    return None
+    # If contacts were fetched successfully, return them as JSON
+    return render(request, 'contacts.html', {'contacts': contacts})
 
-# The view to display customer info
-def customer_info(request):
-    contact = None
-    if 'email' in request.GET:
-        email = request.GET.get('email')
-        contact_data = fetch_zoho_customer(email)
-        if contact_data:
-            contact = {
-                "name": contact_data.get("Full_Name", "-"),
-                "company_name": contact_data.get("Company", "-"),
-                "support_time_left": contact_data.get("Support_Time_Left", "-")  # Adjust this based on the Zoho field name
-            }
-
-    return render(request, "crm/customer_info.html", {"contact": contact})
+# View to refresh the Zoho access token
+def refresh_access_token(request):
+    access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
+    if access_token:
+        return JsonResponse({"message": "Access token is already available."}, status=200)
+    
+    # If no access token, attempt to refresh it
+    new_token = refresh_zoho_access_token()
+    if new_token:
+        os.environ['ZOHO_ACCESS_TOKEN'] = new_token
+        return JsonResponse({"message": "Access token refreshed successfully."}, status=200)
+    else:
+        return JsonResponse({"error": "Failed to refresh access token."}, status=400)

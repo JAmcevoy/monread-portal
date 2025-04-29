@@ -25,12 +25,12 @@ if env_path.exists():
         exec(code, dict(__file__=env_path))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(7a-=$@3ujs*)d^$rqw@n_eq5t1=b$$aw_@m=wxg!-%^dw+uh1"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
