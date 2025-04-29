@@ -5,41 +5,8 @@
   <meta charset="UTF-8">
   <title>Monread Customer Portal - Contact Details</title>
   <link rel="icon" href="{% static 'images/icon.png' %}">
+  <link href="{% static 'css/contact_detail.css' %}" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .sidebar {
-      background-color: #e9ecef;
-      padding: 1rem;
-      height: 100%;
-      border-right: 1px solid #ccc;
-    }
-    .logo-placeholder {
-      width: 250px;
-      height: 250px;
-      background-color: #dee2e6;
-      border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: auto;
-    }
-    .content-area {
-      background-color: #dee2e6;
-      margin-top: 85px;
-      height: 300px;
-      overflow-y: auto;
-      padding: 1rem;
-    }
-    .top-bar {
-      background-color: #fd5c3f;
-      padding: 1rem;
-      color: white;
-    }
-  </style>
 </head>
 <body>
 
@@ -71,6 +38,12 @@
       </div>
       <div class="sidebar mb-3">
         <h6>{{ contact.Account_Name.name|default:"N/A" }}</h6>
+        {% if account.Account_Name %}
+          <p class="mb-0"><strong>Account:</strong> {{ account.Account_Name }}</p>
+          <p><strong>Website:</strong> {{ account.Website|default:"-" }}</p>
+          <p><strong>Phone:</strong> {{ account.Phone|default:"-" }}</p>
+          <p><strong>Billing Address:</strong> {{ account.Billing_Street|default:"-" }}, {{ account.Billing_City }}, {{ account.Billing_State }}, {{ account.Billing_Code }}, {{ account.Billing_Country }}</p>
+        {% endif %}
       </div>
       <div class="sidebar">
         <p class="mb-0">{{ contact.Mailing_Street|default:"No Address Provided" }}</p>
@@ -87,7 +60,7 @@
         </div>
         <div class="col-md-6">
           <p><strong>{{ contact.Email }}</strong></p>
-          <p>Support Time Remaining: {{ contact.Support_Time|default:"Not Set" }}</p>
+          <p>Support Time Remaining: {{ account.support_time|default:"Not Set" }} minutes</p>
         </div>
       </div>
 

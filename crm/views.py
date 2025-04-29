@@ -81,21 +81,42 @@ def show_contacts(request):
 
 # View to display the contact details from Zoho CRM
 def contact_detail(request, contact_id):
-    
     access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
     if not access_token:
         return JsonResponse({'error': 'Failed to get Zoho access token.'}, status=500)
 
-    url = f"https://www.zohoapis.com/crm/v2/Contacts/{contact_id}"
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
 
+    # Step 1: Get the Contact
+    contact_url = f"https://www.zohoapis.com/crm/v2/Contacts/{contact_id}"
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(contact_url, headers=headers)
         response.raise_for_status()
         data = response.json()
         contact = data['data'][0] if data.get('data') else {}
-        return render(request, 'contact_detail.html', {'contact': contact})
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': 'Failed to fetch contact details.', 'details': str(e)}, status=500)
+
+    # Step 2: Get the associated Account
+    account = {}
+    account_id = contact.get("Account_Name", {}).get("id")
+    if account_id:
+        account_url = f"https://www.zohoapis.com/crm/v2/Accounts/{account_id}"
+        try:
+            acc_response = requests.get(account_url, headers=headers)
+            acc_response.raise_for_status()
+            acc_data = acc_response.json()
+            account = acc_data['data'][0] if acc_data.get('data') else {}
+        except requests.exceptions.RequestException as e:
+            account = {"error": "Failed to fetch account details", "details": str(e)}
+
+    # Step 3: Render both
+    return render(request, 'contact_detail.html', {
+        'contact': contact,
+        'account': account
+    })
+    
+    
+    
