@@ -1,41 +1,55 @@
 # views.py
 import os
 import requests
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.shortcuts import render
+
 from .utils import fetch_zoho_contacts
 
 
-@csrf_exempt  # for simplicity; in production, use CSRF protection properly
+@csrf_exempt
 def contact_login(request):
     if request.method == "POST":
-        email = request.POST.get("email")
-        access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
-        if not access_token:
-            return JsonResponse({"error": "Access token missing."}, status=500)
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-        url = "https://www.zohoapis.com/crm/v2/Contacts/search"
-        headers = {
-            "Authorization": f"Bearer {access_token}"
-        }
-        params = {
-            "email": email
-        }
+        # Authenticate using username
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)  # Log the user in
 
-        try:
-            response = requests.get(url, headers=headers, params=params)
-            response.raise_for_status()
-            data = response.json()
-            if data.get('data'):
-                contact = data['data'][0]
-                return redirect('contact_detail', contact_id=contact['id'])
-            else:
-                return render(request, "crm/login.html", {"error": "Email not found."})
-        except requests.exceptions.RequestException as e:
-            return JsonResponse({"error": "Search failed", "details": str(e)}, status=500)
+            # Then use their email to search Zoho contact
+            email = user.email
+            access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
+            if not access_token:
+                return JsonResponse({"error": "Access token missing."}, status=500)
+
+            url = "https://www.zohoapis.com/crm/v2/Contacts/search"
+            headers = {
+                "Authorization": f"Bearer {access_token}"
+            }
+            params = {
+                "criteria": f"(Email:equals:{email})"
+            }
+
+            try:
+                response = requests.get(url, headers=headers, params=params)
+                response.raise_for_status()
+                data = response.json()
+                if data.get('data'):
+                    contact = data['data'][0]
+                    return redirect('contact_detail', contact_id=contact['id'])
+                else:
+                    return render(request, "login.html", {"error": "No CRM contact found for this email."})
+            except requests.exceptions.RequestException as e:
+                return JsonResponse({"error": "Zoho contact search failed", "details": str(e)}, status=500)
+        else:
+            return render(request, "login.html", {"error": "Invalid username or password."})
 
     return render(request, "login.html")
 
