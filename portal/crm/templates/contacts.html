@@ -61,7 +61,9 @@
             <div class="contacts-list">
                 {% for contact in contacts %}
                     <div class="contact-card">
-                        <h3>Contact ID: {{ contact.id }}</h3>
+                        <h3>Contact ID: <a href="{% url 'contact_detail' contact.id %}">
+                            {{ contact.id }}
+                          </a></h3>
                         
                         <div class="contact-info">
                             <strong>Owner:</strong>

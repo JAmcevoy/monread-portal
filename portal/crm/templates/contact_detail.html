@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monread Customer Portal - Contact Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      background-color: #e9ecef;
+      padding: 1rem;
+      height: 100%;
+      border-right: 1px solid #ccc;
+    }
+    .logo-placeholder {
+      width: 150px;
+      height: 150px;
+      background-color: #dee2e6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      font-weight: bold;
+    }
+    .content-area {
+      background-color: #dee2e6;
+      height: 300px;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    .top-bar {
+      background-color: #fd5c3f;
+      padding: 1rem;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row top-bar align-items-center">
+    <div class="col-md-10">
+      <h4 class="m-0">Monread Customer Portal</h4>
+    </div>
+    <div class="col-md-2 text-end">
+      <button class="btn btn-dark btn-sm">Edit Info</button>
+      <button class="btn btn-dark btn-sm">Logout</button>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-3 text-center">
+      <div class="logo-placeholder mb-3">
+        Company Logo
+      </div>
+      <div class="sidebar mb-3">
+        <h6>{{ contact.Account_Name.name|default:"N/A" }}</h6>
+      </div>
+      <div class="sidebar">
+        <p class="mb-0">{{ contact.Mailing_Street|default:"No Address Provided" }}</p>
+        <p>{{ contact.Mailing_City }} {{ contact.Mailing_State }} {{ contact.Mailing_Zip }}</p>
+        <p>{{ contact.Mailing_Country }}</p>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="row mb-4 text-center">
+        <div class="col-md-6">
+          <p><strong>{{ contact.Full_Name }}</strong></p>
+          <p>Renewal Date: {{ contact.Renewal_Date|default:"-" }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>{{ contact.Email }}</strong></p>
+          <p>Support Time Remaining: {{ contact.Support_Time|default:"Not Set" }}</p>
+        </div>
+      </div>
+
+      <div class="content-area">
+        <h5>Contact Details</h5>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Phone:</strong> {{ contact.Phone|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Mobile:</strong> {{ contact.Mobile|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Department:</strong> {{ contact.Department|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Lead Source:</strong> {{ contact.Lead_Source|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Data Source:</strong> {{ contact.Data_Source|default:"N/A" }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

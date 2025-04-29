@@ -1,4 +1,6 @@
 # views.py
+import os
+import requests
 from django.http import JsonResponse
 from django.shortcuts import render
 from .utils import fetch_zoho_contacts
@@ -27,3 +29,22 @@ def refresh_access_token(request):
         return JsonResponse({"message": "Access token refreshed successfully."}, status=200)
     else:
         return JsonResponse({"error": "Failed to refresh access token."}, status=400)
+    
+def contact_detail(request, contact_id):
+    access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
+    if not access_token:
+        return JsonResponse({'error': 'Failed to get Zoho access token.'}, status=500)
+
+    url = f"https://www.zohoapis.com/crm/v2/Contacts/{contact_id}"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        contact = data['data'][0] if data.get('data') else {}
+        return render(request, 'contact_detail.html', {'contact': contact})
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': 'Failed to fetch contact details.', 'details': str(e)}, status=500)
