@@ -1,11 +1,47 @@
 # views.py
 import os
 import requests
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.shortcuts import render
 from .utils import fetch_zoho_contacts
 
+
+@csrf_exempt  # for simplicity; in production, use CSRF protection properly
+def contact_login(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
+        if not access_token:
+            return JsonResponse({"error": "Access token missing."}, status=500)
+
+        url = "https://www.zohoapis.com/crm/v2/Contacts/search"
+        headers = {
+            "Authorization": f"Bearer {access_token}"
+        }
+        params = {
+            "email": email
+        }
+
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            data = response.json()
+            if data.get('data'):
+                contact = data['data'][0]
+                return redirect('contact_detail', contact_id=contact['id'])
+            else:
+                return render(request, "crm/login.html", {"error": "Email not found."})
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": "Search failed", "details": str(e)}, status=500)
+
+    return render(request, "login.html")
+
+
 # View to display the contacts from Zoho CRM
+@staff_member_required
 def show_contacts(request):
     contacts = fetch_zoho_contacts()  # Call the function to fetch contacts
 
@@ -29,8 +65,10 @@ def refresh_access_token(request):
         return JsonResponse({"message": "Access token refreshed successfully."}, status=200)
     else:
         return JsonResponse({"error": "Failed to refresh access token."}, status=400)
-    
+
+
 def contact_detail(request, contact_id):
+    
     access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
     if not access_token:
         return JsonResponse({'error': 'Failed to get Zoho access token.'}, status=500)
