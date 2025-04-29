@@ -9,8 +9,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
-from .utils import fetch_zoho_contacts
+from .utils import fetch_zoho_contacts, refresh_zoho_access_token
 
+
+# View to refresh the Zoho access token
+def refresh_access_token(request):
+    access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
+    if access_token:
+        return JsonResponse({"message": "Access token is already available."}, status=200)
+    
+    # If no access token, attempt to refresh it
+    new_token = refresh_zoho_access_token()
+    if new_token:
+        os.environ['ZOHO_ACCESS_TOKEN'] = new_token
+        return JsonResponse({"message": "Access token refreshed successfully."}, status=200)
+    else:
+        return JsonResponse({"error": "Failed to refresh access token."}, status=400)
 
 @csrf_exempt
 def contact_login(request):
@@ -53,7 +67,6 @@ def contact_login(request):
 
     return render(request, "login.html")
 
-
 # View to display the contacts from Zoho CRM
 @staff_member_required
 def show_contacts(request):
@@ -66,21 +79,7 @@ def show_contacts(request):
     # If contacts were fetched successfully, return them as JSON
     return render(request, 'contacts.html', {'contacts': contacts})
 
-# View to refresh the Zoho access token
-def refresh_access_token(request):
-    access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
-    if access_token:
-        return JsonResponse({"message": "Access token is already available."}, status=200)
-    
-    # If no access token, attempt to refresh it
-    new_token = refresh_zoho_access_token()
-    if new_token:
-        os.environ['ZOHO_ACCESS_TOKEN'] = new_token
-        return JsonResponse({"message": "Access token refreshed successfully."}, status=200)
-    else:
-        return JsonResponse({"error": "Failed to refresh access token."}, status=400)
-
-
+# View to display the contact details from Zoho CRM
 def contact_detail(request, contact_id):
     
     access_token = os.environ.get("ZOHO_ACCESS_TOKEN")
