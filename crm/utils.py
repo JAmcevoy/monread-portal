@@ -28,7 +28,6 @@ def get_access_token():
         "refresh_token": refresh_token,
         "client_id": client_id,
         "client_secret": client_secret,
-        "redirect_uri": redirect_uri,
         "grant_type": "refresh_token"
     }
 
