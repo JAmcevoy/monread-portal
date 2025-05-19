@@ -1,66 +1,86 @@
 {% extends 'base.html' %}
-{%load static%}
+{% load static %}
 
 {% block title %}Contact Details{% endblock %}
 
+{% block extra_head %}
+<link href="{% static 'css/contact_detail.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<div class="col-md-3 text-center">
-  <div class="logo-placeholder mb-3">
-    {% if contact.image_url %}
-      <img src="{{ contact.image_url }}" alt="Contact Image"
-           class="img-fluid rounded-circle w-100 h-100"
-           style="object-fit: cover;">
-    {% else %}
-      <img src="{% static 'images/default-avatar.png' %}" alt="No Image"
-           class="img-fluid rounded-circle w-100 h-100"
-           style="object-fit: cover;">
-    {% endif %}
-  </div>
-  <div class="sidebar mb-3">
-    <h6>{{ contact.Account_Name.name|default:"N/A" }}</h6>
-    {% if account.Account_Name %}
-      <p class="mb-0"><strong>Account:</strong> {{ account.Account_Name }}</p>
-      <p><strong>Website:</strong> {{ account.Website|default:"-" }}</p>
-      <p><strong>Phone:</strong> {{ account.Phone|default:"-" }}</p>
-      <p><strong>Billing Address:</strong> {{ account.Billing_Street|default:"-" }}, {{ account.Billing_City }}, {{ account.Billing_State }}, {{ account.Billing_Code }}, {{ account.Billing_Country }}</p>
-    {% endif %}
-  </div>
-  <div class="sidebar">
-    <p class="mb-0">{{ contact.Mailing_Street|default:"No Address Provided" }}</p>
-    <p>{{ contact.Mailing_City }} {{ contact.Mailing_State }} {{ contact.Mailing_Zip }}</p>
-    <p>{{ contact.Mailing_Country }}</p>
-  </div>
-</div>
+<div class="container mt-4">
+  <div class="row g-4">
+    <!-- Sidebar -->
+    <div class="col-lg-4 col-md-5">
+      <div class="text-center mb-3">
+        <div class="logo-placeholder mx-auto">
+          {% if contact.image_url %}
+            <img src="{{ contact.image_url }}" alt="Contact Image" class="img-fluid rounded-circle object-fit-cover w-100 h-100">
+          {% else %}
+            <img src="{% static 'images/default-avatar.png' %}" alt="No Image" class="img-fluid rounded-circle object-fit-cover w-100 h-100">
+          {% endif %}
+        </div>
+      </div>
 
-<div class="col-md-9">
-  <div class="row mb-4 contact-info-bar text-center">
-    <div class="col-md-3">
-      <p><strong>Contact Name:</strong><br>{{ contact.Full_Name }}</p>
+      <div class="sidebar mb-3 rounded shadow-sm">
+        <h5 class="fw-semibold">{{ contact.Account_Name.name|default:"N/A" }}</h5>
+        {% if account.Account_Name %}
+          <p><strong>Account:</strong> {{ account.Account_Name }}</p>
+          <p><strong>Website:</strong> {{ account.Website|default:"-" }}</p>
+          <p><strong>Phone:</strong> {{ account.Phone|default:"-" }}</p>
+          <p><strong>Billing Address:</strong><br>
+            {{ account.Billing_Street|default:"-" }}, {{ account.Billing_City }},
+            {{ account.Billing_State }}, {{ account.Billing_Code }},
+            {{ account.Billing_Country }}
+          </p>
+        {% endif %}
+      </div>
     </div>
-    <div class="col-md-3">
-      <p><strong>Email:</strong><br>{{ contact.Email }}</p>
-    </div>
-    <div class="col-md-3">
-      <p><strong>Renewal Date:</strong><br>{{ account.Renewal_Date|default:"-" }}</p>
-    </div>
-    <div class="col-md-3">
-      <p><strong>Support Time:</strong><br>{{ account.support_time|default:"Not Set" }} minutes</p>
-    </div>
-  </div>
 
-  <div class="content-area">
-    <h5>Contact Details</h5>
-    <ul class="list-group">
-      <li class="list-group-item"><strong>Phone:</strong> {{ contact.Phone|default:"N/A" }}</li>
-      <li class="list-group-item"><strong>Mobile:</strong> {{ contact.Mobile|default:"N/A" }}</li>
-      <li class="list-group-item"><strong>Department:</strong> {{ contact.Department|default:"N/A" }}</li>
-      <li class="list-group-item"><strong>Account Manager:</strong> {{ contact.Account_Manager.name|default:"N/A" }}</li>
-    </ul>
-  </div>
+    <!-- Main Content -->
+    <div class="col-lg-8 col-md-7">
+      <div class="contact-info-bar row text-center g-2">
+        <div class="col-6 col-md-3">
+          <div class="bg-light p-3 rounded shadow-sm">
+            <strong>Contact Name</strong><br>
+            {{ contact.Full_Name }}
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="bg-light p-3 rounded shadow-sm">
+            <strong>Email</strong><br>
+            {{ contact.Email }}
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="bg-light p-3 rounded shadow-sm">
+            <strong>Renewal Date</strong><br>
+            {{ account.Renewal_Date|default:"-" }}
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="bg-light p-3 rounded shadow-sm">
+            <strong>Support Time</strong><br>
+            {{ account.support_time|default:"Not Set" }} mins
+          </div>
+        </div>
+      </div>
 
-  <div class="zoho-desk mt-4">
-    <h5>Support Tickets</h5>
-    <div id="zohodesk-asap-container"></div>
+      <div class="content-area mt-4 rounded shadow-sm">
+        <h5 class="mb-3">Contact Details</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Phone:</strong> {{ contact.Phone|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Mobile:</strong> {{ contact.Mobile|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Department:</strong> {{ contact.Department|default:"N/A" }}</li>
+          <li class="list-group-item"><strong>Account Manager:</strong> {{ contact.Account_Manager.name|default:"N/A" }}</li>
+        </ul>
+      </div>
+
+      <div class="zoho-desk mt-4 rounded shadow-sm">
+        <h5 class="mb-3">Support Tickets</h5>
+        <div id="zohodesk-asap-container"></div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
