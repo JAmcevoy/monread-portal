@@ -4,7 +4,7 @@
 {% block title %}Contact Details{% endblock %}
 
 {% block extra_head %}
-<link href="{% static 'css/contact_detail.css' %}" rel="stylesheet">
+  <link href="{% static 'css/contact_detail.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -78,9 +78,22 @@
 
       <div class="zoho-desk mt-4 rounded shadow-sm">
         <h5 class="mb-3">Support Tickets</h5>
-        <div id="zohodesk-asap-container"></div>
+        <div id="zohodesk-asap-container">
+          <!-- Zoho Desk ASAP will render here -->
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Zoho Desk Button Indicator -->
+<div class="zoho-button-indicator text-end pe-3 pb-5">
+  <div class="badge">
+    Need Help? Click the blue button →
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/zohodesk_init.js' %}"></script>
 {% endblock %}

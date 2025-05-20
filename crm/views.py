@@ -139,7 +139,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('contact_detail')  # or your main dashboard view
+            return redirect('home')  # or your main dashboard view
     else:
         form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
