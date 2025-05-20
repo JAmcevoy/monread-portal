@@ -1,7 +1,7 @@
 import os
 import requests
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
@@ -49,6 +49,9 @@ def contact_login(request):
 
     return render(request, "login.html")
 
+def contact_logout(request):
+    logout(request)
+    return redirect('login')
 
 @staff_member_required
 def show_contacts(request):
