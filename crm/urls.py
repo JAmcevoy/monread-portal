@@ -8,4 +8,5 @@ urlpatterns = [
     path('', views.show_contacts, name='contacts'),  # URL to display contacts
     path('login/', views.contact_login, name='login'),
     path('logout/', views.contact_logout, name='logout'),
+    path('signup/', views.signup_view, name='signup'),
 ]

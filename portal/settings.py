@@ -14,7 +14,7 @@ if env_path.exists():
         exec(code, dict(__file__=env_path))
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS = [

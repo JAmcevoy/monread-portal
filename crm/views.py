@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from .utils import fetch_zoho_contacts, get_access_token
+from .forms import CustomUserCreationForm
 
 
 @csrf_exempt
@@ -131,3 +132,14 @@ def contact_photo(request, contact_id):
             return HttpResponse(f"Failed to fetch image: {response.status_code}", status=response.status_code)
     except requests.exceptions.RequestException as e:
         return HttpResponse(f"Error fetching image: {str(e)}", status=500)
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('contact_detail')  # or your main dashboard view
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'signup.html', {'form': form})
