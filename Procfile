@@ -1,1 +1,1 @@
-web: gunicorn monread-portal.wsgi
+web: gunicorn portal.wsgi
