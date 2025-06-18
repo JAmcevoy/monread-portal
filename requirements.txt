@@ -107,13 +107,16 @@ prometheus_client==0.21.1
 prompt_toolkit==3.0.50
 psutil==7.0.0
 psycopg2==2.9.9
+psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure_eval==0.2.3
 pycparser==2.22
 Pygments==2.19.1
 PyJWT==2.8.0
+pyodbc==5.2.0
 pyparsing==3.2.1
 python-dateutil==2.9.0.post0
+python-decouple==3.8
 python-json-logger==3.3.0
 python3-openid==3.2.0
 pytz==2025.1

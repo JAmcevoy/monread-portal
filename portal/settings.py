@@ -1,6 +1,8 @@
 # Django settings for portal project.
 
 from pathlib import Path
+from decouple import config
+import dj_database_url
 import os
 import sys
 
@@ -58,10 +60,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "portal.wsgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.parse(config('DATABASE_URL'))
 }
 
 AUTH_PASSWORD_VALIDATORS = [
